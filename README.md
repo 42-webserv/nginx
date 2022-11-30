@@ -6,6 +6,7 @@
 - init.sh 을 실행
 - when [디버깅] src/core/nginx.c <- main 함수 위치
 - when [서버실행] 루트 위치에 있는 nginx를 실행
+- data/ 폴더에 생성 파일 위치
 
 </br>
 
