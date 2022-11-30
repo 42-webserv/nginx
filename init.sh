@@ -12,19 +12,34 @@ status_log() {
 # check 339 line in nginx.c - for multi-process
 
 status_log "** mkdir /Users/$USER/goinfre/$USER/nginx/[log|conf] + touch .log, .conf"
-mkdir -p /Users/$USER/goinfre/$USER/nginx/logs
-mkdir -p /Users/$USER/goinfre/$USER/nginx/conf
-mkdir -p /Users/$USER/goinfre/$USER/nginx/www
-touch /Users/$USER/goinfre/$USER/nginx/logs/error.log
-touch /Users/$USER/goinfre/$USER/nginx/conf/nginx.conf
+mkdir -p data/{logs,conf,www}
+touch data/logs/error.log
+touch data/conf/nginx.conf
+touch data/www/index.html
+
+status_log "** add default page"
+cat << EOF > ./data/www/index.html
+<!doctype html>
+<html>
+  <head>
+    <title>Hello nginx</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>
+      Hello World!
+    </h1>
+  </body>
+</html>
+EOF
 
 
 status_log "** insert config"
-cat << EOF > /Users/$USER/goinfre/$USER/nginx/conf/nginx.conf
+cat << EOF > ./data/conf/nginx.conf
 #user       www www;  ## Default: nobody
 worker_processes  5;  ## Default: 1
-error_log  /usr/local/nginx/logs/error.log;
-pid        /usr/local/nginx/logs/error.pid;
+error_log  $PWD/data/log/error.log;
+pid        $PWD/data/log/error.pid;
 worker_rlimit_nofile 8192;
 
 events {
@@ -35,22 +50,27 @@ http {
   #include    conf/mime.types;
   #include    /etc/nginx/proxy.conf;
   #include    /etc/nginx/fastcgi.conf;
+  root      $PWD/data/www;
   index    index.html index.htm index.php;
 
   default_type application/octet-stream;
-  log_format   main '$remote_addr - $remote_user [$time_local]  $status '
-    '"$request" $body_bytes_sent "$http_referer" '
-    '"$http_user_agent" "$http_x_forwarded_for"';
-  access_log   logs/access.log  main;
+  log_format   main '\$remote_addr - \$remote_user [\$time_local]  \$status '
+    '"\$request" \$body_bytes_sent "\$http_referer" '
+    '"\$http_user_agent" "\$http_x_forwarded_for"';
+  access_log   $PWD/data/logs/access.log  main;
   sendfile     on;
   tcp_nopush   on;
   server_names_hash_bucket_size 128; # this seems to be required for some vhosts
 
-  server { # php/fastcgi
+  server {
     listen       80;
     server_name  domain1.com www.domain1.com;
-    access_log   /usr/local/nginx/logs/error.log main;
-    root		/www;
+    # access_log   $PWD/data/logs/access.log main;
+    # root		/www;
+
+    location / {
+      index  index.html index.htm index.php;
+    }
 
     #location ~ \.php$ {
     #  fastcgi_pass   127.0.0.1:1025;
@@ -63,12 +83,13 @@ EOF
 
 
 status_log "** mv configure in root"
-cd auto && cp configure ../ && cd ..
+cp ./auto/configure .
 
 
 
 status_log "** configure... "
 ./configure --without-http_rewrite_module
+rm configure
 
 
 

@@ -61,10 +61,12 @@ fi
 . auto/threads
 . auto/modules
 . auto/lib/conf
-
 case ".$NGX_PREFIX" in
     .)
-        NGX_PREFIX=${NGX_PREFIX:-/Users/$USER/goinfre/$USER/nginx}
+        # echo $PWD | cut -c -$(expr ${#PWD} - 5)
+        # NGX_PREFIX=${NGX_PREFIX:-$(echo $PWD | cut -c -$(expr ${#PWD} - 5))}
+        NGX_PREFIX=${NGX_PREFIX:-$PWD/data}
+        # NGX_PREFIX=${NGX_PREFIX:-/Users/$USER/goinfre/$USER/nginx}
         have=NGX_PREFIX value="\"$NGX_PREFIX/\"" . auto/define
     ;;
 
