@@ -38,8 +38,8 @@ status_log "** insert config"
 cat << EOF > ./data/conf/nginx.conf
 #user       www www;  ## Default: nobody
 worker_processes  5;  ## Default: 1
-error_log  $PWD/data/log/error.log;
-pid        $PWD/data/log/error.pid;
+error_log  $PWD/data/logs/error.log;
+pid        $PWD/data/logs/error.pid;
 worker_rlimit_nofile 8192;
 
 events {
