@@ -11,6 +11,7 @@
 - `src/core/nginx.c`: main 함수 위치
 - `data 폴더`: 각종 생성 파일
 - `data/logs`: 로그 파일
+- `data/www`: index.html 위치 (nginx.conf에 작성된 root 위치)
 
 <br>
 
