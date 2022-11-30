@@ -4,8 +4,8 @@
 
 ## 초기  사용 방법
 - init.sh 을 실행
-- [디버깅] src/core/nginx.c 부터 디버깅을 시작
-- [서버 실행] 루트 위치에 있는 nginx를 실행
+- when [디버깅] src/core/nginx.c <- main 함수 위치
+- when [서버실행] 루트 위치에 있는 nginx를 실행
 
 </br>
 
