@@ -64,7 +64,7 @@ fi
 
 case ".$NGX_PREFIX" in
     .)
-        NGX_PREFIX=${NGX_PREFIX:-/usr/local/nginx}
+        NGX_PREFIX=${NGX_PREFIX:-/Users/$USER/goinfre/$USER/nginx}
         have=NGX_PREFIX value="\"$NGX_PREFIX/\"" . auto/define
     ;;
 
