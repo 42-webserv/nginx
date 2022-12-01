@@ -14,8 +14,7 @@ ngx_daemon(ngx_log_t *log)
 {
     int  fd;
 
-    // NOTE:
-    // nginx make a daemon process
+    // NOTE: nginx make a daemon process
     // commentfy by yoma
 
     // switch (fork()) {
@@ -33,8 +32,7 @@ ngx_daemon(ngx_log_t *log)
     ngx_parent = ngx_pid;
     ngx_pid = ngx_getpid();
 
-    // NOTE:
-    // setsid does not work on Cluster mac / permittion denied
+    // NOTE: setsid does not work on Cluster mac / permittion denied
     // commentfy by yoma
 
     // if (setsid() == -1) {

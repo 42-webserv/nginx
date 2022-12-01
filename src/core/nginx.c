@@ -250,7 +250,7 @@ main(int argc, char *const *argv)
     init_cycle.log = log;
     ngx_cycle = &init_cycle;
 
-    init_cycle.pool = ngx_create_pool(1024, log);
+    init_cycle.pool = ngx_create_pool(1024, log); // NOTE: init data structures. by yoma
     if (init_cycle.pool == NULL) {
         return 1;
     }
@@ -333,7 +333,7 @@ main(int argc, char *const *argv)
 
     ngx_cycle = cycle;
 
-    ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);
+    ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module); // NOTE: get conf. by yoma
 
     if (ccf->master && ngx_process == NGX_PROCESS_SINGLE) {
         // ngx_process = NGX_PROCESS_MASTER;
@@ -377,7 +377,7 @@ main(int argc, char *const *argv)
     ngx_use_stderr = 0;
 
     if (ngx_process == NGX_PROCESS_SINGLE) {
-        ngx_single_process_cycle(cycle);
+        ngx_single_process_cycle(cycle); // NOTE: main loop. by yoma
 
     } else {
         ngx_master_process_cycle(cycle);
