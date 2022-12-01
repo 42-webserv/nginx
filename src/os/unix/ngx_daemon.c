@@ -14,17 +14,21 @@ ngx_daemon(ngx_log_t *log)
 {
     int  fd;
 
-    switch (fork()) {
-    case -1:
-        ngx_log_error(NGX_LOG_EMERG, log, ngx_errno, "fork() failed");
-        return NGX_ERROR;
+     // NOTE:
+     // nginx make a daemon process
+     // commentfy by yoma
 
-    case 0:
-        break;
+    // switch (fork()) {
+    // case -1:
+    //     ngx_log_error(NGX_LOG_EMERG, log, ngx_errno, "fork() failed");
+    //     return NGX_ERROR;
 
-    default:
-        exit(0);
-    }
+    // case 0:
+    //     break;
+
+    // default:
+    //     exit(0);
+    // }
 
     ngx_parent = ngx_pid;
     ngx_pid = ngx_getpid();
