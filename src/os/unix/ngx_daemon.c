@@ -14,9 +14,9 @@ ngx_daemon(ngx_log_t *log)
 {
     int  fd;
 
-     // NOTE:
-     // nginx make a daemon process
-     // commentfy by yoma
+    // NOTE:
+    // nginx make a daemon process
+    // commentfy by yoma
 
     // switch (fork()) {
     // case -1:
@@ -33,10 +33,14 @@ ngx_daemon(ngx_log_t *log)
     ngx_parent = ngx_pid;
     ngx_pid = ngx_getpid();
 
-    if (setsid() == -1) {
-        ngx_log_error(NGX_LOG_EMERG, log, ngx_errno, "setsid() failed");
-        return NGX_ERROR;
-    }
+    // NOTE:
+    // setsid does not work on Cluster mac / permittion denied
+    // commentfy by yoma
+
+    // if (setsid() == -1) {
+    //     ngx_log_error(NGX_LOG_EMERG, log, ngx_errno, "setsid() failed");
+    //     return NGX_ERROR;
+    // }
 
     umask(0);
 
