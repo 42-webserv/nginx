@@ -202,7 +202,7 @@ ngx_process_events_and_timers(ngx_cycle_t *cycle)
         flags = 0;
 
     } else {
-        timer = ngx_event_find_timer();
+        timer = ngx_event_find_timer(); //NOTE : current - last. by yoma
         flags = NGX_UPDATE_TIME;
 
 #if (NGX_WIN32)
@@ -238,16 +238,17 @@ ngx_process_events_and_timers(ngx_cycle_t *cycle)
         }
     }
 
-    if (!ngx_queue_empty(&ngx_posted_next_events)) {
+    if (!ngx_queue_empty(&ngx_posted_next_events)) { // NOTE: check prev queue is empty. by yoma
         ngx_event_move_posted_next(cycle);
         timer = 0;
     }
 
-    delta = ngx_current_msec;
+    delta = ngx_current_msec; // NOTE: get current time. by yoma
 
-    (void) ngx_process_events(cycle, timer, flags);
+    (void) ngx_process_events(cycle, timer, flags); // NOTE: kqueue / ngnx_event_module_t ngx_kqueue_module_ctx's handler exec. by yoma
+    // kqueue / ngnx_event_module_t ngx_kqueue_module_ctx's handler exec. by yoma
 
-    delta = ngx_current_msec - delta;
+    delta = ngx_current_msec - delta; // NOTE: current - last . by yoma
 
     ngx_log_debug1(NGX_LOG_DEBUG_EVENT, cycle->log, 0,
                    "timer delta: %M", delta);

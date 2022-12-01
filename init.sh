@@ -47,9 +47,9 @@ events {
 }
 
 http {
-  #include    conf/mime.types;
   #include    /etc/nginx/proxy.conf;
-  #include    /etc/nginx/fastcgi.conf;
+  include    $PWD/conf/mime.types;
+  include    $PWD/conf/fastcgi.conf;
   root      $PWD/data/www;
   index    index.html index.htm index.php;
 
