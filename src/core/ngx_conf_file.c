@@ -90,7 +90,7 @@ ngx_conf_param(ngx_conf_t *cf)
     cf->conf_file = &conf_file;
     cf->conf_file->buffer = &b;
 
-    rv = ngx_conf_parse(cf, NULL);
+    rv = ngx_conf_parse(cf, NULL); // NOTE: conf parse start. by yoma
 
     cf->conf_file = NULL;
 

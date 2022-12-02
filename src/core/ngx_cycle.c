@@ -281,7 +281,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         return NULL;
     }
 
-    if (ngx_conf_parse(&conf, &cycle->conf_file) != NGX_CONF_OK) {
+    if (ngx_conf_parse(&conf, &cycle->conf_file) != NGX_CONF_OK) { // NOTE conf parse redid?. by yoma
         environ = senv;
         ngx_destroy_cycle_pools(&conf);
         return NULL;
@@ -615,7 +615,7 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         }
     }
 
-    if (ngx_open_listening_sockets(cycle) != NGX_OK) {
+    if (ngx_open_listening_sockets(cycle) != NGX_OK) { // NOTE: set socket part. by yoma
         goto failed;
     }
 
