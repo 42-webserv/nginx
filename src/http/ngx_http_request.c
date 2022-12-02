@@ -1047,7 +1047,7 @@ failed:
 
 
 static void
-ngx_http_process_request_line(ngx_event_t *rev)
+ngx_http_process_request_line(ngx_event_t *rev) // NOTE: request parse start. by yoma
 {
     ssize_t              n;
     ngx_int_t            rc, rv;
@@ -1073,14 +1073,14 @@ ngx_http_process_request_line(ngx_event_t *rev)
     for ( ;; ) {
 
         if (rc == NGX_AGAIN) {
-            n = ngx_http_read_request_header(r);
+            n = ngx_http_read_request_header(r); // NOTE : read request header(recv). by yoma
 
             if (n == NGX_AGAIN || n == NGX_ERROR) {
                 break;
             }
         }
 
-        rc = ngx_http_parse_request_line(r, r->header_in);
+        rc = ngx_http_parse_request_line(r, r->header_in); //NOTE: parse request line. by yoma
 
         if (rc == NGX_OK) {
 
@@ -1100,7 +1100,7 @@ ngx_http_process_request_line(ngx_event_t *rev)
                 r->http_protocol.len = r->request_end - r->http_protocol.data;
             }
 
-            if (ngx_http_process_request_uri(r) != NGX_OK) {
+            if (ngx_http_process_request_uri(r) != NGX_OK) { // NOTE: parse request uri. by yoma
                 break;
             }
 
@@ -1160,12 +1160,12 @@ ngx_http_process_request_line(ngx_event_t *rev)
             c->log->action = "reading client request headers";
 
             rev->handler = ngx_http_process_request_headers;
-            ngx_http_process_request_headers(rev);
+            ngx_http_process_request_headers(rev); // NOTE: request header function start. by yoma
 
             break;
         }
 
-        if (rc != NGX_AGAIN) {
+        if (rc != NGX_AGAIN) { // NOTE: NGX_ERROR case. by yoma
 
             /* there was error while a request line parsing */
 
@@ -1186,7 +1186,7 @@ ngx_http_process_request_line(ngx_event_t *rev)
 
         if (r->header_in->pos == r->header_in->end) {
 
-            rv = ngx_http_alloc_large_header_buffer(r, 1);
+            rv = ngx_http_alloc_large_header_buffer(r, 1); //NOTE: how to check large size? by yoma
 
             if (rv == NGX_ERROR) {
                 ngx_http_close_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
@@ -1331,7 +1331,7 @@ ngx_http_process_request_uri(ngx_http_request_t *r)
 
 
 static void
-ngx_http_process_request_headers(ngx_event_t *rev)
+ngx_http_process_request_headers(ngx_event_t *rev) // NOTE: actual request headeer line(parse, save). by yoma
 {
     u_char                     *p;
     size_t                      len;
@@ -1414,7 +1414,7 @@ ngx_http_process_request_headers(ngx_event_t *rev)
         cscf = ngx_http_get_module_srv_conf(r, ngx_http_core_module);
 
         rc = ngx_http_parse_header_line(r, r->header_in,
-                                        cscf->underscores_in_headers);
+                                        cscf->underscores_in_headers); // NOTE: parse per header line. by yoma
 
         if (rc == NGX_OK) {
 
@@ -1433,7 +1433,7 @@ ngx_http_process_request_headers(ngx_event_t *rev)
 
             /* a header line has been parsed successfully */
 
-            h = ngx_list_push(&r->headers_in.headers);
+            h = ngx_list_push(&r->headers_in.headers); // NOTE: parse OK, add this line. by yoma
             if (h == NULL) {
                 ngx_http_close_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
                 break;
@@ -1463,7 +1463,7 @@ ngx_http_process_request_headers(ngx_event_t *rev)
             }
 
             hh = ngx_hash_find(&cmcf->headers_in_hash, h->hash,
-                               h->lowcase_key, h->key.len);
+                               h->lowcase_key, h->key.len); // NOTE; what is that? for cookie? by yoma
 
             if (hh && hh->handler(r, h, hh->offset) != NGX_OK) {
                 break;

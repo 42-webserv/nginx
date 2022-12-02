@@ -615,12 +615,12 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
         }
     }
 
-    if (ngx_open_listening_sockets(cycle) != NGX_OK) { // NOTE: set socket part. by yoma
+    if (ngx_open_listening_sockets(cycle) != NGX_OK) { // NOTE: set front socket part. by yoma
         goto failed;
     }
 
     if (!ngx_test_config) {
-        ngx_configure_listening_sockets(cycle);
+        ngx_configure_listening_sockets(cycle); // NOTE: set conf each socket part. by yoma
     }
 
 

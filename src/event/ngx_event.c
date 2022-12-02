@@ -245,15 +245,14 @@ ngx_process_events_and_timers(ngx_cycle_t *cycle)
 
     delta = ngx_current_msec; // NOTE: get current time. by yoma
 
-    (void) ngx_process_events(cycle, timer, flags); // NOTE: kqueue / ngnx_event_module_t ngx_kqueue_module_ctx's handler exec. by yoma
-    // kqueue / ngnx_event_module_t ngx_kqueue_module_ctx's handler exec. by yoma
+    (void) ngx_process_events(cycle, timer, flags); // NOTE: kqueue start. check request. by yoma
 
     delta = ngx_current_msec - delta; // NOTE: current - last . by yoma
 
     ngx_log_debug1(NGX_LOG_DEBUG_EVENT, cycle->log, 0,
                    "timer delta: %M", delta);
 
-    ngx_event_process_posted(cycle, &ngx_posted_accept_events);
+    ngx_event_process_posted(cycle, &ngx_posted_accept_events); // NOTE: accept event add back to list. by yoma
 
     if (ngx_accept_mutex_held) {
         ngx_shmtx_unlock(&ngx_accept_mutex);
@@ -261,7 +260,7 @@ ngx_process_events_and_timers(ngx_cycle_t *cycle)
 
     ngx_event_expire_timers();
 
-    ngx_event_process_posted(cycle, &ngx_posted_events);
+    ngx_event_process_posted(cycle, &ngx_posted_events); // NOTE: process FIFO queue. by yoma
 }
 
 

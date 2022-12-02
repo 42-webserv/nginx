@@ -730,7 +730,7 @@ ngx_configure_listening_sockets(ngx_cycle_t *cycle)
 
         if (ls[i].rcvbuf != -1) {
             if (setsockopt(ls[i].fd, SOL_SOCKET, SO_RCVBUF,
-                           (const void *) &ls[i].rcvbuf, sizeof(int))
+                           (const void *) &ls[i].rcvbuf, sizeof(int)) // NOTE: recv buf setting. by yoma
                 == -1)
             {
                 ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_socket_errno,
@@ -741,7 +741,7 @@ ngx_configure_listening_sockets(ngx_cycle_t *cycle)
 
         if (ls[i].sndbuf != -1) {
             if (setsockopt(ls[i].fd, SOL_SOCKET, SO_SNDBUF,
-                           (const void *) &ls[i].sndbuf, sizeof(int))
+                           (const void *) &ls[i].sndbuf, sizeof(int)) // NOTE: send buf setting. by yoma
                 == -1)
             {
                 ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_socket_errno,
@@ -754,7 +754,7 @@ ngx_configure_listening_sockets(ngx_cycle_t *cycle)
             value = (ls[i].keepalive == 1) ? 1 : 0;
 
             if (setsockopt(ls[i].fd, SOL_SOCKET, SO_KEEPALIVE,
-                           (const void *) &value, sizeof(int))
+                           (const void *) &value, sizeof(int)) // NOTE: socket opt setting. by yoma
                 == -1)
             {
                 ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_socket_errno,
@@ -857,7 +857,7 @@ ngx_configure_listening_sockets(ngx_cycle_t *cycle)
 
             /* change backlog via listen() */
 
-            if (listen(ls[i].fd, ls[i].backlog) == -1) {
+            if (listen(ls[i].fd, ls[i].backlog) == -1) { // NOTE: socket listen part. by yoma
                 ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_socket_errno,
                               "listen() to %V, backlog %d failed, ignored",
                               &ls[i].addr_text, ls[i].backlog);
