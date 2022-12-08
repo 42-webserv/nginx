@@ -1046,6 +1046,23 @@ failed:
 #endif
 
 
+// #include <stdio.h>
+// #include <unistd.h>
+// #include <fcntl.h>
+
+//     {
+//         // TEST: by yoma
+//         int yoma = open("./test_write", O_WRONLY | O_CREAT | O_APPEND, 0644);
+//         u_char *p;
+//         u_char ch;
+//         for (p = r->header_in->pos; p < r->header_in->last; p++) {
+//             ch = *p;
+//             write(yoma, &ch, 1);
+//         }
+//         close(yoma);
+//     }
+
+
 static void
 ngx_http_process_request_line(ngx_event_t *rev) // NOTE: request parse start. by yoma
 {
@@ -1519,7 +1536,6 @@ ngx_http_process_request_headers(ngx_event_t *rev) // NOTE: actual request heade
     ngx_http_run_posted_requests(c);
 }
 
-
 static ssize_t
 ngx_http_read_request_header(ngx_http_request_t *r)
 {
@@ -1543,6 +1559,7 @@ ngx_http_read_request_header(ngx_http_request_t *r)
     } else {
         n = NGX_AGAIN;
     }
+
 
     if (n == NGX_AGAIN) {
         if (!rev->timer_set) {

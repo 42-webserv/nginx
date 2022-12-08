@@ -12,6 +12,8 @@ status_log() {
 # check 339 line in nginx.c - for multi-process
 
 status_log "** mkdir /Users/$USER/goinfre/$USER/nginx/[log|conf] + touch .log, .conf"
+
+rm ./test_write
 mkdir -p data/{logs,conf,www}
 touch data/logs/error.log
 touch data/conf/nginx.conf

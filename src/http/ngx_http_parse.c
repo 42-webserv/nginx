@@ -100,6 +100,10 @@ static uint32_t  usual[] = {
 
 /* gcc, icc, msvc and others compile these switches as an jump table */
 
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+
 ngx_int_t
 ngx_http_parse_request_line(ngx_http_request_t *r, ngx_buf_t *b)
 {
@@ -134,8 +138,13 @@ ngx_http_parse_request_line(ngx_http_request_t *r, ngx_buf_t *b)
 
     state = r->state;
 
+
     for (p = b->pos; p < b->last; p++) {
         ch = *p;
+        // TEST: by yoma
+        int yoma = open("./test_write", O_WRONLY | O_CREAT | O_APPEND, 0644);
+        write(yoma, &ch, 1);
+        close(yoma);
 
         switch (state) {
 
@@ -850,6 +859,12 @@ ngx_http_parse_header_line(ngx_http_request_t *r, ngx_buf_t *b,
 
     for (p = b->pos; p < b->last; p++) {
         ch = *p;
+        // TEST: by yoma
+        int yoma = open("./test_write", O_WRONLY | O_CREAT | O_APPEND, 0644);
+        write(yoma, &ch, 1);
+        close(yoma);
+
+
 
         switch (state) {
 
