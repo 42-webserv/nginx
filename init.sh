@@ -15,6 +15,7 @@ status_log "** mkdir /Users/$USER/goinfre/$USER/nginx/[log|conf] + touch .log, .
 
 rm ./test_write
 mkdir -p data/{logs,conf,www}
+mkdir -p data/www/upload/cgi-bin
 touch data/logs/error.log
 touch data/conf/nginx.conf
 touch data/www/index.html
@@ -35,6 +36,50 @@ cat << EOF > ./data/www/index.html
 </html>
 EOF
 
+cat << EOF > ./data/www/upload/index.html
+<html>
+<body>
+   <form enctype = "multipart/form-data"
+                     action = "./cgi-bin/save_file.py" method = "post">
+   <p>File: <input type = "file" name = "filename" /></p>
+   <p><input type = "submit" value = "Upload" /></p>
+   </form>
+</body>
+</html>
+EOF
+
+cat << EOF > ./data/www/upload/cgi-bin/save_file.py
+#!/usr/bin/python
+
+import cgi, os
+import cgitb; cgitb.enable()
+
+form = cgi.FieldStorage()
+
+# Get filename here.
+fileitem = form['filename']
+
+# Test if the file was uploaded
+if fileitem.filename:
+   # strip leading path from file name to avoid
+   # directory traversal attacks
+   fn = os.path.basename(fileitem.filename)
+   open('/tmp/' + fn, 'wb').write(fileitem.file.read())
+
+   message = 'The file "' + fn + '" was uploaded successfully'
+
+else:
+   message = 'No file was uploaded'
+
+print ("""\
+Content-Type: text/html\r\n\r\n<html>
+<body>
+   <p>%s</p>
+<a href='/'>Go Back to Root</a>
+</body>
+</html>
+""" % (message,))
+EOF
 
 status_log "** insert config"
 cat << EOF > ./data/conf/nginx.conf
@@ -70,8 +115,19 @@ http {
     # access_log   $PWD/data/logs/access.log main;
     # root		/www;
 
+    location /upload {
+		# root		$PWD/data/www/upload;
+		index                 	index.html index.htm index.php;
+		client_body_temp_path		$PWD/data/www/upload;
+		client_body_in_file_only  	on;
+		client_body_buffer_size		128k;
+		client_max_body_size		100M;
+      # dav_methods  PUT;
+    }
+
     location / {
       index  index.html index.htm index.php;
+      # autoindex on;
     }
 
     #location ~ \.php$ {
