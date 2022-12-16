@@ -15,7 +15,7 @@ status_log "** mkdir /Users/$USER/goinfre/$USER/nginx/[log|conf] + touch .log, .
 
 rm ./test_write
 mkdir -p data/{logs,conf,www}
-mkdir -p data/www/upload/cgi-bin
+# mkdir -p data/www/upload/cgi-bin
 touch data/logs/error.log
 touch data/conf/nginx.conf
 touch data/www/index.html
@@ -48,94 +48,42 @@ cat << EOF > ./data/www/upload/index.html
 </html>
 EOF
 
-cat << EOF > ./data/www/upload/cgi-bin/save_file.py
-#!/usr/bin/python
+# cat << EOF > ./data/www/upload/cgi-bin/save_file.py
+# #!/usr/bin/python
 
-import cgi, os
-import cgitb; cgitb.enable()
+# import cgi, os
+# import cgitb; cgitb.enable()
 
-form = cgi.FieldStorage()
+# form = cgi.FieldStorage()
 
-# Get filename here.
-fileitem = form['filename']
+# # Get filename here.
+# fileitem = form['filename']
 
-# Test if the file was uploaded
-if fileitem.filename:
-   # strip leading path from file name to avoid
-   # directory traversal attacks
-   fn = os.path.basename(fileitem.filename)
-   open('/tmp/' + fn, 'wb').write(fileitem.file.read())
+# # Test if the file was uploaded
+# if fileitem.filename:
+#    # strip leading path from file name to avoid
+#    # directory traversal attacks
+#    fn = os.path.basename(fileitem.filename)
+#    open('/tmp/' + fn, 'wb').write(fileitem.file.read())
 
-   message = 'The file "' + fn + '" was uploaded successfully'
+#    message = 'The file "' + fn + '" was uploaded successfully'
 
-else:
-   message = 'No file was uploaded'
+# else:
+#    message = 'No file was uploaded'
 
-print ("""\
-Content-Type: text/html\r\n\r\n<html>
-<body>
-   <p>%s</p>
-<a href='/'>Go Back to Root</a>
-</body>
-</html>
-""" % (message,))
-EOF
+# print ("""\
+# Content-Type: text/html\r\n\r\n<html>
+# <body>
+#    <p>%s</p>
+# <a href='/'>Go Back to Root</a>
+# </body>
+# </html>
+# """ % (message,))
+# EOF
 
 status_log "** insert config"
-cat << EOF > ./data/conf/nginx.conf
-#user       www www;  ## Default: nobody
-worker_processes  5;  ## Default: 1
-error_log  $PWD/data/logs/error.log;
-pid        $PWD/data/logs/error.pid;
-worker_rlimit_nofile 8192;
+sh ./config.sh
 
-events {
-  worker_connections  4096;  ## Default: 1024
-}
-
-http {
-  #include    /etc/nginx/proxy.conf;
-  include    $PWD/conf/mime.types;
-  include    $PWD/conf/fastcgi.conf;
-  root      $PWD/data/www;
-  index    index.html index.htm index.php;
-
-  default_type application/octet-stream;
-  log_format   main '\$remote_addr - \$remote_user [\$time_local]  \$status '
-    '"\$request" \$body_bytes_sent "\$http_referer" '
-    '"\$http_user_agent" "\$http_x_forwarded_for"';
-  access_log   $PWD/data/logs/access.log  main;
-  sendfile     on;
-  tcp_nopush   on;
-  server_names_hash_bucket_size 128; # this seems to be required for some vhosts
-
-  server {
-    listen       80;
-    server_name  domain1.com www.domain1.com;
-    # access_log   $PWD/data/logs/access.log main;
-    # root		/www;
-
-    location /upload {
-		# root		$PWD/data/www/upload;
-		index                 	index.html index.htm index.php;
-		client_body_temp_path		$PWD/data/www/upload;
-		client_body_in_file_only  	on;
-		client_body_buffer_size		128k;
-		client_max_body_size		100M;
-      # dav_methods  PUT;
-    }
-
-    location / {
-      index  index.html index.htm index.php;
-      # autoindex on;
-    }
-
-    #location ~ \.php$ {
-    #  fastcgi_pass   127.0.0.1:1025;
-    #}
-  }
-}
-EOF
 
 
 
