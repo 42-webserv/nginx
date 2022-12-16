@@ -40,14 +40,14 @@ http {
 	server_names_hash_bucket_size 128; # this seems to be required for some vhosts
 
 	server {
-		listen       80;
+		listen       80 default_server;
 		server_name  domain1.com www.domain1.com;
 		# access_log   $PWD/data/logs/access.log main;
 		root      $PWD/data/www;
 
 		location /upload {
 			# root		$PWD/data/www/upload;
-			index                 	errors.html;
+			index                 	error.html;
 			# index                 	index.html index.htm index.php;
 		error_page 404 /error.html;
 			client_body_temp_path		$PWD/data/www/upload;
@@ -57,15 +57,36 @@ http {
 		# dav_methods  PUT;
 		}
 
-    location / {
-		index  index.html index.htm index.php;
-		# autoindex on;
-    }
+		location / {
+			index  index.html index.htm index.php;
+			# autoindex on;
+		}
 
-    #location ~ \.php$ {
-    #  fastcgi_pass   127.0.0.1:1025;
-    #}
+		#location ~ \.php$ {
+		#  fastcgi_pass   127.0.0.1:1025;
+		#}
+	}
+
+	server {
+		listen       1234;
+		server_name  yoma;
+		# access_log   $PWD/data/logs/access.log main;
+		root      $PWD/data/www;
+
+		location /upload {
+			# root		$PWD/data/www/upload;
+			# index                 	errors.html;
+			index                 	index.html index.htm index.php;
+		error_page 404 /error.html;
+			client_body_temp_path		$PWD/data/www/upload;
+			client_body_in_file_only  	on;
+			client_body_buffer_size		128k;
+			client_max_body_size		100M;
+		# dav_methods  PUT;
+		}
 
 	}
+
+
 }
 EOF
